@@ -1,4 +1,9 @@
-export const firstFold = {
+// Define the type with a numeric index signature
+type QuestionFold = {
+  [key: number]: string;
+};
+
+export const firstFold: QuestionFold = {
   "0": "How will your product portfolio",
   "1": "Will your transformational solution",
   "2": "Can your brand strategy",
@@ -13,7 +18,7 @@ export const firstFold = {
   "11": "How might your business ecosystem",
 };
 
-export const secondFold = {
+export const secondFold: QuestionFold = {
   "0": "pioneer AI-driven transformation",
   "1": "cultivate an employee-centric culture of continuous growth",
   "2": "embed DEI initiatives as core drivers of innovation",
@@ -28,7 +33,7 @@ export const secondFold = {
   "11": "proactively navigate complex regulatory landscapes worldwide",
 };
 
-export const thirdFold = {
+export const thirdFold: QuestionFold = {
   "0": "And cultivate enduring brand loyalty across markets?",
   "1": "And strengthen your competitive moat?",
   "2": "while establishing undeniable market dominance?",

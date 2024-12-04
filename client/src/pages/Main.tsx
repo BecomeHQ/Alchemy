@@ -19,8 +19,13 @@ import { firstFold, secondFold, thirdFold } from "../utils/questions";
 
 import images from "../utils/images";
 
-const callGenerateAPI = async (userInput: string) => {
-  const apiUrl = process.env.REACT_APP_API_URL;
+interface ApiResponse {
+  isSuccess: boolean;
+  apiResponse?: string;
+}
+
+const callGenerateAPI = async (userInput: string): Promise<ApiResponse> => {
+  const apiUrl = "http://localhost:3000/generate";
 
   try {
     const response = await fetch(apiUrl, {
@@ -53,7 +58,11 @@ const callGenerateAPI = async (userInput: string) => {
   }
 };
 
-function QuestionChat({ question }) {
+interface QuestionChatProps {
+  question: string;
+}
+
+function QuestionChat({ question }: QuestionChatProps) {
   return (
     <div className="c_converation-1">
       <div>{question}</div>
@@ -61,7 +70,11 @@ function QuestionChat({ question }) {
   );
 }
 
-function AnswerChat({ answer }) {
+interface AnswerChatProps {
+  answer: string;
+}
+
+function AnswerChat({ answer }: AnswerChatProps) {
   return (
     <div className="c_converation-2">
       <div>{answer}</div>
@@ -70,25 +83,24 @@ function AnswerChat({ answer }) {
   );
 }
 
-function ChatbotSection({ questions }: any) {
+interface ChatbotSectionProps {
+  questions: Record<string, string>;
+}
+
+function ChatbotSection({ questions }: ChatbotSectionProps) {
   const [questionInfo, setQuestionInfo] = useState<string[]>([]);
   const [answerInfo, setAnswerInfo] = useState<string[]>([]);
   const [userInput, setUserInput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async ({
-    userInput,
-    setQuestionInfo,
-    setAnswerInfo,
-  }: any) => {
+  const handleSubmit = async (userInput: string) => {
     setLoading(true);
     const data = localStorage.getItem("userDetails");
     if (data) {
       const { Name } = JSON.parse(data);
-      const returnedValue: any = callGenerateAPI(userInput);
-      console.log(returnedValue);
-      toast.promise(
-        returnedValue,
+
+      const returnedValue = toast.promise(
+        callGenerateAPI(userInput),
         {
           loading: "Getting Your response",
           success: <b>Your response is ready</b>,
@@ -103,10 +115,12 @@ function ChatbotSection({ questions }: any) {
           },
         }
       );
-      const response = await returnedValue;
-      if (response.isSuccess) {
-        setQuestionInfo((prev: any) => [...prev, userInput]);
-        setAnswerInfo((prev: any) => [...prev, response.apiResponse]);
+
+      const result: ApiResponse = await returnedValue;
+
+      if (result.isSuccess) {
+        setQuestionInfo((prev) => [...prev, userInput]);
+        setAnswerInfo((prev) => [...prev, result.apiResponse!]);
       } else {
         toast.error("model is not able to generate response please try later");
       }
@@ -114,8 +128,8 @@ function ChatbotSection({ questions }: any) {
       const allQuestions = Object.values(thirdFold);
       const questionFound = allQuestions.some((q) => userInput.includes(q));
       if (questionFound) {
-        setQuestionInfo((prev: any) => [...prev, userInput]);
-        setAnswerInfo((prev: any) => [
+        setQuestionInfo((prev) => [...prev, userInput]);
+        setAnswerInfo((prev) => [
           ...prev,
           "Thank you for using our Positioning Alchemy please fill the details below for better answers\n Organization Name ? and your Email? separated with ','",
         ]);
@@ -133,10 +147,10 @@ function ChatbotSection({ questions }: any) {
               email: email,
             })
           );
-          setQuestionInfo((prev: any) => [...prev, userInput]);
-          setAnswerInfo((prev: any) => [
+          setQuestionInfo((prev) => [...prev, userInput]);
+          setAnswerInfo((prev) => [
             ...prev,
-            "Thankyou give your name and organization. You can now ask a question",
+            "Thank you, give your name and organization. You can now ask a question",
           ]);
         } else {
           toast.error(
@@ -168,13 +182,7 @@ function ChatbotSection({ questions }: any) {
           />
           <button
             className="c_chat-sent_btn"
-            onClick={() =>
-              handleSubmit({
-                userInput,
-                setQuestionInfo,
-                setAnswerInfo,
-              })
-            }
+            onClick={() => handleSubmit(userInput)}
             disabled={loading}
           >
             <img src={sendBtn} loading="lazy" alt="Send Button" />
@@ -213,23 +221,34 @@ function ChatbotSection({ questions }: any) {
   );
 }
 
+interface HeroSectionProps {
+  sequenceNumber: number;
+  setSequenceNumber: React.Dispatch<React.SetStateAction<number>>;
+  setQuestions: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  questions: Record<string, string>;
+}
+
 const HeroSection = ({
   sequenceNumber,
   setSequenceNumber,
   setQuestions,
   questions,
-}: any) => {
+}: HeroSectionProps) => {
   const handleLock = () => {
     console.log(`t${imageData.image3 + 1}`);
   };
 
-  const [imageData, setImageData] = useState<any>({
+  const [imageData, setImageData] = useState<{
+    image1: number;
+    image2: number;
+    image3: number;
+  }>({
     image1: 0,
     image2: 0,
     image3: 0,
   });
 
-  const handleShuffle = async (setQuestions, setSequenceNumber) => {
+  const handleShuffle = async () => {
     const randomIndex: number = Math.floor(Math.random() * 12);
     const randomIndex2: number = Math.floor(Math.random() * 12);
     const randomIndex3: number = Math.floor(Math.random() * 12);
@@ -252,7 +271,7 @@ const HeroSection = ({
     setQuestions(finalData);
   };
 
-  const handleCopy = (questions) => {
+  const handleCopy = (questions: Record<string, string>) => {
     const question =
       questions["data"] + " " + questions["data2"] + " " + questions["data3"];
     navigator.clipboard.writeText(question);
@@ -379,9 +398,7 @@ const HeroSection = ({
                     <img src={copyIcon} alt="Copy" loading="lazy" />
                   </button>
                   <button
-                    onClick={() =>
-                      handleShuffle(setQuestions, setSequenceNumber)
-                    }
+                    onClick={() => handleShuffle()}
                     className="button-randomize c_generate-btn_cta w-inline-block"
                   >
                     <div>Shuffle</div>
@@ -417,7 +434,7 @@ function Main() {
   const data: string = firstFold[0];
   const data2: string = secondFold[0];
   const data3: string = thirdFold[0];
-  const [questions, setQuestions] = React.useState({
+  const [questions, setQuestions] = React.useState<Record<string, string>>({
     data: data,
     data2: data2,
     data3: data3,
@@ -499,4 +516,5 @@ function Main() {
     </div>
   );
 }
+
 export default Main;
