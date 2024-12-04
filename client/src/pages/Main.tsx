@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import "../App.css";
 import logo from "../assets/images/Become-Logo.png";
 import btn1 from "../assets/images/btn_1.svg";
-import heartImageL1 from "../assets/images/Mask-group-2.png";
-import heartImageL2 from "../assets/images/Mask-group.png";
-import heartImageL3 from "../assets/images/Mask-group-1.png";
 import circleImage from "../assets/images/circleee.png";
 import paperCut from "../assets/images/paper-cut.png";
 import copyIcon from "../assets/images/copy.svg";
@@ -25,16 +22,17 @@ interface ApiResponse {
 }
 
 const callGenerateAPI = async (userInput: string): Promise<ApiResponse> => {
-  const apiUrl = "http://localhost:3000/generate";
-
   try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ input: userInput }),
-    });
+    const response = await fetch(
+      "https://alchemybackend.become.team//generate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input: userInput }),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -83,11 +81,7 @@ function AnswerChat({ answer }: AnswerChatProps) {
   );
 }
 
-interface ChatbotSectionProps {
-  questions: Record<string, string>;
-}
-
-function ChatbotSection({ questions }: ChatbotSectionProps) {
+function ChatbotSection() {
   const [questionInfo, setQuestionInfo] = useState<string[]>([]);
   const [answerInfo, setAnswerInfo] = useState<string[]>([]);
   const [userInput, setUserInput] = useState<string>("");
@@ -97,7 +91,7 @@ function ChatbotSection({ questions }: ChatbotSectionProps) {
     setLoading(true);
     const data = localStorage.getItem("userDetails");
     if (data) {
-      const { Name } = JSON.parse(data);
+      // const { Name } = JSON.parse(data);
 
       const returnedValue = toast.promise(
         callGenerateAPI(userInput),
@@ -188,7 +182,7 @@ function ChatbotSection({ questions }: ChatbotSectionProps) {
             <img src={sendBtn} loading="lazy" alt="Send Button" />
           </button>
         </div>
-        {questionInfo?.map((key, index) => (
+        {questionInfo?.map((_, index) => (
           <div key={index}>
             {questionInfo[index] && (
               <div className="c_box-1">
@@ -418,7 +412,7 @@ const HeroSection = ({
                     You can generate your answers here. Our APK will give
                     answers to your startup chaos.
                   </p>
-                  <ChatbotSection questions={questions} />
+                  <ChatbotSection />
                 </div>
               </div>
             </div>
