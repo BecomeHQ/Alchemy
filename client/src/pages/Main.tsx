@@ -24,7 +24,7 @@ interface ApiResponse {
 const callGenerateAPI = async (userInput: string): Promise<ApiResponse> => {
   try {
     const response = await fetch(
-      "https://alchemybackend.become.team//generate",
+      "https://alchemybackend.become.team/generate",
       {
         method: "POST",
         headers: {
