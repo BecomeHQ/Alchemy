@@ -232,10 +232,13 @@ const HeroSection = ({
 
     if (num === 1) {
       updatedQuestions.data = firstFold[randomIndex];
+      setImageData((prev) => ({ ...prev, image1: randomIndex }));
     } else if (num === 2) {
       updatedQuestions.data2 = secondFold[randomIndex];
+      setImageData((prev) => ({ ...prev, image2: randomIndex }));
     } else if (num === 3) {
       updatedQuestions.data3 = thirdFold[randomIndex];
+      setImageData((prev) => ({ ...prev, image3: randomIndex }));
     }
 
     setQuestions(updatedQuestions);
