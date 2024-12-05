@@ -91,8 +91,6 @@ function ChatbotSection() {
     setLoading(true);
     const data = localStorage.getItem("userDetails");
     if (data) {
-      // const { Name } = JSON.parse(data);
-
       const returnedValue = toast.promise(
         callGenerateAPI(userInput),
         {
@@ -228,8 +226,19 @@ const HeroSection = ({
   setQuestions,
   questions,
 }: HeroSectionProps) => {
-  const handleLock = () => {
-    console.log(`t${imageData.image3 + 1}`);
+  const handleLock = (num: number) => {
+    const randomIndex = Math.floor(Math.random() * 12);
+    let updatedQuestions = { ...questions };
+
+    if (num === 1) {
+      updatedQuestions.data = firstFold[randomIndex];
+    } else if (num === 2) {
+      updatedQuestions.data2 = secondFold[randomIndex];
+    } else if (num === 3) {
+      updatedQuestions.data3 = thirdFold[randomIndex];
+    }
+
+    setQuestions(updatedQuestions);
   };
 
   const [imageData, setImageData] = useState<{
@@ -330,7 +339,7 @@ const HeroSection = ({
                     <div className="c_combination-locker">
                       <button
                         className="button-randomize"
-                        onClick={() => handleLock()}
+                        onClick={() => handleLock(1)}
                       >
                         <img
                           src={btn1}
@@ -346,7 +355,7 @@ const HeroSection = ({
                     <div className="c_combination-locker">
                       <button
                         className="button-randomize"
-                        onClick={() => handleLock()}
+                        onClick={() => handleLock(2)}
                       >
                         <img
                           src={btn1}
@@ -362,7 +371,7 @@ const HeroSection = ({
                     <div className="c_combination-locker">
                       <button
                         className="button-randomize"
-                        onClick={() => handleLock()}
+                        onClick={() => handleLock(3)}
                       >
                         <img
                           src={btn1}
