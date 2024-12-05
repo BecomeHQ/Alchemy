@@ -953,7 +953,7 @@ html.w-mod-touch * {
 }
 .w-inline-block {
   max-width: 100%;
-  display: inline-block;
+  display: flex;
 }
 .w-clearfix:before,
 .w-clearfix:after {
