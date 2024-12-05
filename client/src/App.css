@@ -182,7 +182,7 @@ p {
   height: 150px;
   display: flex;
   position: relative;
-  top: -17px;
+  top: -11px;
 }
 
 .c_image-layer-2 {
@@ -199,6 +199,7 @@ p {
   height: 150px;
   display: flex;
   position: relative;
+  top: 11spx;
 }
 
 .c_heart-image-l1 {

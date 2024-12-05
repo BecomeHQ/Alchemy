@@ -89,7 +89,7 @@ function ChatbotSection() {
 
   const handleSubmit = async (userInput: string) => {
     setLoading(true);
-    setUserInput(""); // Clear input after submission
+    setUserInput("");
 
     const data = localStorage.getItem("userDetails");
     if (data) {
@@ -358,7 +358,7 @@ const HeroSection = ({
                         src={images.s[imageData.image2]}
                         alt="Layer 2"
                         className="c_heart-image-l2"
-                        width="290"
+                        width="265"
                         loading="lazy"
                       />
                     )}
