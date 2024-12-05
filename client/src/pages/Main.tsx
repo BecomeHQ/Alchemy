@@ -89,6 +89,8 @@ function ChatbotSection() {
 
   const handleSubmit = async (userInput: string) => {
     setLoading(true);
+    setUserInput(""); // Clear input after submission
+
     const data = localStorage.getItem("userDetails");
     if (data) {
       const returnedValue = toast.promise(
@@ -144,6 +146,34 @@ function ChatbotSection() {
             ...prev,
             "Thank you, give your name and organization. You can now ask a question",
           ]);
+
+          const returnedValue = toast.promise(
+            callGenerateAPI(questionInfo[0]),
+            {
+              loading: "Getting Your response",
+              success: <b>Your response is ready</b>,
+              error: <b>Please try again later</b>,
+            },
+            {
+              style: {
+                fontSize: "20px",
+                width: "300px",
+                background: "#333",
+                color: "#fff",
+              },
+            }
+          );
+
+          const result: ApiResponse = await returnedValue;
+
+          if (result.isSuccess) {
+            setQuestionInfo((prev) => [...prev, questionInfo[0]]);
+            setAnswerInfo((prev) => [...prev, result.apiResponse!]);
+          } else {
+            toast.error(
+              "model is not able to generate response please try later"
+            );
+          }
         } else {
           toast.error(
             "Invalid input format. Please provide both name and email."
@@ -152,6 +182,12 @@ function ChatbotSection() {
       }
     }
     setLoading(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && userInput.trim()) {
+      handleSubmit(userInput);
+    }
   };
 
   return (
@@ -171,6 +207,7 @@ function ChatbotSection() {
             placeholder="Ask your questions here"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
+            onKeyDown={handleKeyDown} // Added event listener for Enter key
           />
           <button
             className="c_chat-sent_btn"
@@ -240,6 +277,8 @@ const HeroSection = ({
       updatedQuestions.data3 = thirdFold[randomIndex];
       setImageData((prev) => ({ ...prev, image3: randomIndex }));
     }
+
+    setSequenceNumber((prev) => prev + randomIndex);
 
     setQuestions(updatedQuestions);
   };
